@@ -3,14 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TI4 Faction Drafter - PoK + Keleres (Standalone)</title>
+    <title>TI4 Faction Drafter - PoK + Keleres</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3a 50%, #0a0a1a 100%);
@@ -18,31 +14,25 @@
             min-height: 100vh;
             padding: 20px;
         }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
+        
+        .container { max-width: 800px; margin: 0 auto; }
+        
         header {
             text-align: center;
             margin-bottom: 40px;
             padding: 20px;
             border-bottom: 2px solid #444;
         }
-
+        
         h1 {
             font-size: 2.5em;
             color: #ff6b35;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
             margin-bottom: 10px;
         }
-
-        .subtitle {
-            color: #888;
-            font-size: 1.1em;
-        }
-
+        
+        .subtitle { color: #888; font-size: 1.1em; }
+        
         .card {
             background: rgba(20, 20, 40, 0.85);
             border-radius: 12px;
@@ -50,9 +40,8 @@
             margin-bottom: 30px;
             box-shadow: 0 8px 25px rgba(0,0,0,0.4);
             border: 1px solid #333;
-            backdrop-filter: blur(5px);
         }
-
+        
         .card h2 {
             color: #ff6b35;
             margin-bottom: 25px;
@@ -60,47 +49,20 @@
             border-bottom: 2px solid #444;
             padding-bottom: 12px;
         }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: #ccc;
-            font-weight: 500;
-        }
-
-        .form-group input[type="text"] {
-            width: 100%;
-            padding: 12px;
-            background: rgba(0,0,0,0.3);
-            border: 1px solid #444;
-            border-radius: 5px;
-            color: #fff;
-            font-size: 1em;
-            transition: border-color 0.3s;
-        }
-
-        .form-group input[type="text"]:focus {
-            outline: none;
-            border-color: #ff6b35;
-        }
-
+        
         .player-inputs {
             display: flex;
             flex-direction: column;
             gap: 15px;
             margin-bottom: 25px;
         }
-
+        
         .player-input {
             display: flex;
             gap: 10px;
             align-items: center;
         }
-
+        
         .player-input input {
             flex: 1;
             padding: 14px 16px;
@@ -111,13 +73,13 @@
             font-size: 1.1em;
             transition: all 0.3s;
         }
-
+        
         .player-input input:focus {
             outline: none;
             border-color: #ff6b35;
             box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.2);
         }
-
+        
         .player-input button {
             padding: 14px 16px;
             background: #666;
@@ -129,11 +91,9 @@
             font-size: 1.1em;
             min-width: 40px;
         }
-
-        .player-input button:hover {
-            background: #ff6b35;
-        }
-
+        
+        .player-input button:hover { background: #ff6b35; }
+        
         button.primary {
             background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
             color: white;
@@ -147,12 +107,12 @@
             font-weight: 600;
             letter-spacing: 0.5px;
         }
-
+        
         button.primary:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 18px rgba(255, 107, 53, 0.4);
         }
-
+        
         button.secondary {
             background: #444;
             color: #ccc;
@@ -163,13 +123,13 @@
             transition: all 0.3s;
             font-size: 1.05em;
         }
-
+        
         button.secondary:hover {
             background: #555;
             color: #fff;
             border-color: #ff6b35;
         }
-
+        
         .btn-container {
             display: flex;
             gap: 20px;
@@ -177,18 +137,16 @@
             margin-top: 25px;
             flex-wrap: wrap;
         }
-
-        .hidden {
-            display: none;
-        }
-
+        
+        .hidden { display: none; }
+        
         .faction-list {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 10px;
             margin-top: 20px;
         }
-
+        
         .faction-tag {
             background: rgba(100, 100, 150, 0.5);
             padding: 10px 16px;
@@ -198,22 +156,22 @@
             border: 1px solid #555;
             transition: all 0.3s;
         }
-
+        
         .faction-tag:hover {
             transform: scale(1.05);
             box-shadow: 0 4px 12px rgba(0,0,0,0.4);
         }
-
+        
         .faction-tag.pok {
             background: rgba(150, 100, 200, 0.5);
             border-color: #ff6b35;
         }
-
+        
         .faction-tag.keleres {
             background: rgba(200, 150, 100, 0.5);
             border-color: #f7931e;
         }
-
+        
         .player-card {
             background: rgba(30, 30, 50, 0.6);
             border-radius: 10px;
@@ -222,36 +180,22 @@
             border-left: 5px solid #ff6b35;
             transition: transform 0.2s, box-shadow 0.2s;
         }
-
+        
         .player-card:hover {
             transform: translateX(5px);
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
-
+        
         .player-card h3 {
             color: #ff6b35;
             margin-bottom: 15px;
             font-size: 1.2em;
         }
-
-        .player-card .factions {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .player-card .faction-group {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        .player-card .faction-label {
-            font-size: 0.85em;
-            color: #888;
-            font-weight: 500;
-        }
-
+        
+        .player-card .factions { display: flex; flex-direction: column; gap: 8px; }
+        .player-card .faction-group { display: flex; flex-direction: column; gap: 5px; }
+        .player-card .faction-label { font-size: 0.85em; color: #888; font-weight: 500; }
+        
         .player-card .faction-value {
             font-size: 1.15em;
             font-weight: 600;
@@ -260,13 +204,13 @@
             border-radius: 6px;
             display: inline-block;
         }
-
+        
         .hidden-faction {
             color: #666;
             font-style: italic;
             background: rgba(100,100,100,0.2);
         }
-
+        
         .draft-info {
             background: rgba(40, 40, 60, 0.5);
             padding: 15px;
@@ -274,12 +218,9 @@
             margin-bottom: 20px;
             text-align: center;
         }
-
-        .draft-info h3 {
-            color: #ff6b35;
-            margin-bottom: 10px;
-        }
-
+        
+        .draft-info h3 { color: #ff6b35; margin-bottom: 10px; }
+        
         .draft-id {
             font-family: monospace;
             background: #222;
@@ -290,7 +231,7 @@
             font-size: 1.1em;
             border: 1px solid #444;
         }
-
+        
         .share-link {
             display: flex;
             gap: 10px;
@@ -299,7 +240,7 @@
             margin-top: 15px;
             flex-wrap: wrap;
         }
-
+        
         .share-link input {
             flex: 1;
             min-width: 250px;
@@ -310,12 +251,9 @@
             color: #fff;
             font-size: 1em;
         }
-
-        .share-link input:focus {
-            outline: none;
-            border-color: #ff6b35;
-        }
-
+        
+        .share-link input:focus { outline: none; border-color: #ff6b35; }
+        
         .copy-btn {
             padding: 12px 20px;
             background: #444;
@@ -326,79 +264,43 @@
             transition: all 0.3s;
             font-size: 1em;
         }
-
-        .copy-btn:hover {
-            background: #ff6b35;
-            color: white;
-            border-color: #ff6b35;
-        }
-
+        
+        .copy-btn:hover { background: #ff6b35; color: white; border-color: #ff6b35; }
+        
         .success-message {
             color: #4CAF50;
             text-align: center;
             margin: 10px 0;
             font-weight: 500;
         }
-
+        
         .error-message {
             color: #f44336;
             text-align: center;
             margin: 10px 0;
             font-weight: 500;
         }
-
-        .loading {
-            text-align: center;
-            padding: 20px;
-            color: #888;
-        }
-
+        
+        .loading { text-align: center; padding: 20px; color: #888; }
+        
         .faction-pool {
             background: rgba(40, 40, 60, 0.5);
             padding: 20px;
             border-radius: 8px;
             margin-bottom: 20px;
         }
-
-        .faction-pool h3 {
-            color: #ff6b35;
-            margin-bottom: 15px;
-        }
-
-        .pool-section {
-            margin-bottom: 15px;
-        }
-
-        .pool-section h4 {
-            color: #ccc;
-            margin-bottom: 8px;
-            font-size: 1em;
-        }
-
+        
+        .faction-pool h3 { color: #ff6b35; margin-bottom: 15px; }
+        .pool-section { margin-bottom: 15px; }
+        .pool-section h4 { color: #ccc; margin-bottom: 8px; font-size: 1em; }
+        
         @media (max-width: 600px) {
-            h1 {
-                font-size: 1.8em;
-            }
-
-            .card {
-                padding: 20px;
-            }
-
-            .btn-container {
-                flex-direction: column;
-            }
-
-            button.primary {
-                width: 100%;
-            }
-
-            .share-link {
-                flex-direction: column;
-            }
-
-            .share-link input {
-                width: 100%;
-            }
+            h1 { font-size: 1.8em; }
+            .card { padding: 20px; }
+            .btn-container { flex-direction: column; }
+            button.primary { width: 100%; }
+            .share-link { flex-direction: column; }
+            .share-link input { width: 100%; }
         }
     </style>
 </head>
@@ -406,94 +308,84 @@
     <div class="container">
         <header>
             <h1>TI4 Faction Drafter</h1>
-            <p class="subtitle">Prophecy of Kings + Council Keleres - Standalone Version</p>
+            <p class="subtitle">Prophecy of Kings + Council Keleres</p>
         </header>
-
-        <!-- Step 1: Enter Player Names -->
         <div id="step1" class="card">
             <h2>Enter Player Names</h2>
             <p style="color: #888; margin-bottom: 20px;">
-                Each player will receive 1 random faction from PoK + Keleres and 3 random factions from the base game.
+                Each player will receive 1 random faction from PoK + Keleres and 3 random factions from the base game.<br>
                 All assignments are kept secret until you choose to reveal them.
             </p>
-
+            
             <div class="player-inputs" id="playerInputs">
                 <div class="player-input">
                     <input type="text" name="players[]" placeholder="Player 1 name" required>
-                    <button type="button" onclick="removePlayer(this)" class="remove-btn">×</button>
+                    <button type="button" onclick="removePlayer(this)">x</button>
                 </div>
                 <div class="player-input">
                     <input type="text" name="players[]" placeholder="Player 2 name" required>
-                    <button type="button" onclick="removePlayer(this)" class="remove-btn">×</button>
+                    <button type="button" onclick="removePlayer(this)">x</button>
                 </div>
                 <div class="player-input">
                     <input type="text" name="players[]" placeholder="Player 3 name" required>
-                    <button type="button" onclick="removePlayer(this)" class="remove-btn">×</button>
+                    <button type="button" onclick="removePlayer(this)">x</button>
                 </div>
             </div>
-
+            
             <button type="button" onclick="addPlayer()" class="secondary" style="margin-bottom: 20px;">
                 Add Another Player
             </button>
-
+            
             <div class="btn-container">
                 <button onclick="createDraft()" class="primary">Create Draft</button>
             </div>
         </div>
-
-        <!-- Step 2: Draft Created -->
         <div id="step2" class="card hidden">
             <h2>Draft Created!</h2>
-
+            
             <div class="draft-info">
                 <h3>Your draft is ready</h3>
                 <p>Share this page URL or Draft ID with all players so they can view their secret assignments.</p>
-
+                
                 <div class="draft-id" id="draftIdDisplay"></div>
-
+                
                 <div class="share-link">
                     <input type="text" id="shareLink" readonly>
                     <button onclick="copyToClipboard()" class="copy-btn">Copy Link</button>
                 </div>
-
+                
                 <div id="copyMessage" class="success-message hidden"></div>
             </div>
-
+            
             <div class="btn-container">
                 <button onclick="viewMyAssignment()" class="primary">View My Assignment</button>
                 <button onclick="revealAll()" class="secondary">Reveal All Assignments</button>
             </div>
         </div>
-
-        <!-- Step 3: View Individual Assignment -->
         <div id="step3" class="card hidden">
             <h2>Your Secret Assignment</h2>
             <p style="color: #888; margin-bottom: 20px;">
                 Keep this secret until the reveal! Each player gets 1 PoK/Keleres faction and 3 base factions.
             </p>
-
+            
             <div id="individualAssignment"></div>
-
+            
             <div class="btn-container">
                 <button onclick="backToDraft()" class="secondary">Back to Draft</button>
             </div>
         </div>
-
-        <!-- Step 4: All Assignments Revealed -->
         <div id="step4" class="card hidden">
             <h2>All Faction Assignments</h2>
             <p style="color: #888; margin-bottom: 20px;">
                 Here are all the faction assignments for each player:
             </p>
-
+            
             <div id="allAssignments"></div>
-
+            
             <div class="btn-container">
                 <button onclick="createNewDraft()" class="primary">Create New Draft</button>
             </div>
         </div>
-
-        <!-- Faction Pool Info -->
         <div class="card">
             <div class="faction-pool">
                 <h3>Faction Pools</h3>
@@ -539,15 +431,9 @@
                 </div>
             </div>
         </div>
-
-        <!-- Loading -->
         <div id="loading" class="card hidden">
-            <div class="loading">
-                <p>Creating your draft...</p>
-            </div>
+            <div class="loading"><p>Creating your draft...</p></div>
         </div>
-
-        <!-- Error -->
         <div id="error" class="card hidden">
             <div class="error-message" id="errorMessage"></div>
             <div class="btn-container">
@@ -555,9 +441,7 @@
             </div>
         </div>
     </div>
-
     <script>
-        // Faction data
         const baseFactions = [
             'Arborec', 'Argent Flight', 'Barony of Letnev', 'Clan of Saar',
             'Embers of Muaat', 'Emirates of Hacan', 'Federation of Sol',
@@ -566,21 +450,13 @@
             'Sardakk Norr', 'University of Jol-Nar', 'Vuil Raith Cabal',
             'Winnu', 'Xxcha Kingdom', 'Yin Brotherhood', 'Yssaril Tribes'
         ];
-
         const pokFactions = [
             'Cabal', 'Celdauri', 'Empyrean', 'Mahact', 'Muaat',
             'Naaz-Rokha', 'Nomad', 'Titans', 'Vayler'
         ];
-
         const keleresFaction = ['Council Keleres'];
-
         const allPokPlusKeleres = [...pokFactions, ...keleresFaction];
-
-        // State
         let currentDraft = null;
-        let currentPlayerName = null;
-
-        // Shuffle array (Fisher-Yates)
         function shuffle(array) {
             const arr = [...array];
             for (let i = arr.length - 1; i > 0; i--) {
@@ -589,8 +465,6 @@
             }
             return arr;
         }
-
-        // Generate a random ID
         function generateId() {
             return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
                 const r = Math.random() * 16 | 0;
@@ -598,44 +472,45 @@
                 return v.toString(16);
             });
         }
-
-        // Create a new draft
+        function addPlayer() {
+            const container = document.getElementById('playerInputs');
+            const playerCount = container.children.length + 1;
+            const div = document.createElement('div');
+            div.className = 'player-input';
+            div.innerHTML = '<input type="text" name="players[]" placeholder="Player ' + playerCount + ' name" required><button type="button" onclick="removePlayer(this)">x</button>';
+            container.appendChild(div);
+        }
+        function removePlayer(button) {
+            const container = document.getElementById('playerInputs');
+            if (container.children.length > 1) {
+                container.removeChild(button.parentElement);
+                const inputs = container.querySelectorAll('.player-input');
+                inputs.forEach(function(input, index) {
+                    input.querySelector('input').placeholder = 'Player ' + (index + 1) + ' name';
+                });
+            }
+        }
         function createDraft() {
             const inputs = document.querySelectorAll('#playerInputs input');
             const playerNames = [];
-
-            inputs.forEach(input => {
+            inputs.forEach(function(input) {
                 const name = input.value.trim();
-                if (name) {
-                    playerNames.push(name);
-                }
+                if (name) playerNames.push(name);
             });
-
             if (playerNames.length === 0) {
                 alert('Please enter at least one player name');
                 return;
             }
-
-            // Show loading
             document.getElementById('step1').classList.add('hidden');
             document.getElementById('loading').classList.remove('hidden');
-
-            // Simulate async delay
-            setTimeout(() => {
+            setTimeout(function() {
                 try {
-                    // Shuffle all factions
                     const shuffledPok = shuffle(allPokPlusKeleres);
                     const shuffledBase = shuffle(baseFactions);
-
-                    // Assign factions
                     const assignments = {};
                     const usedBaseFactions = new Set();
-
-                    playerNames.forEach((player, index) => {
-                        // Each player gets 1 PoK+Keleres faction and 3 base factions
+                    playerNames.forEach(function(player, index) {
                         const pokFaction = shuffledPok[index % shuffledPok.length];
-
-                        // Get 3 unique base factions
                         const playerBaseFactions = [];
                         let baseIndex = 0;
                         while (playerBaseFactions.length < 3) {
@@ -646,37 +521,26 @@
                             }
                             baseIndex++;
                         }
-
                         assignments[player] = {
-                            pokFaction,
+                            pokFaction: pokFaction,
                             baseFactions: playerBaseFactions,
                             revealed: false
                         };
                     });
-
                     const draft = {
                         id: generateId(),
                         players: playerNames,
-                        assignments,
+                        assignments: assignments,
                         createdAt: new Date().toISOString()
                     };
-
                     currentDraft = draft;
-
-                    // Update UI
                     document.getElementById('loading').classList.add('hidden');
                     document.getElementById('step2').classList.remove('hidden');
-
                     document.getElementById('draftIdDisplay').textContent = draft.id;
-                    const shareLink = `${window.location.origin}${window.location.pathname}?draft=${draft.id}`;
+                    const shareLink = window.location.origin + window.location.pathname + '?draft=' + draft.id;
                     document.getElementById('shareLink').value = shareLink;
-
-                    // Store draft in URL
-                    window.history.pushState({}, '', `?draft=${draft.id}`);
-
-                    // Store draft in localStorage for persistence
-                    localStorage.setItem(`draft_${draft.id}`, JSON.stringify(draft));
-
+                    window.history.pushState({}, '', '?draft=' + draft.id);
+                    localStorage.setItem('draft_' + draft.id, JSON.stringify(draft));
                 } catch (error) {
                     document.getElementById('loading').classList.add('hidden');
                     document.getElementById('errorMessage').textContent = error.message;
@@ -684,66 +548,52 @@
                 }
             }, 500);
         }
-
-        // Copy link to clipboard
         function copyToClipboard() {
             const input = document.getElementById('shareLink');
             input.select();
             document.execCommand('copy');
-
             const message = document.getElementById('copyMessage');
             message.textContent = 'Link copied to clipboard!';
             message.classList.remove('hidden');
-
-            setTimeout(() => {
-                message.classList.add('hidden');
-            }, 2000);
+            setTimeout(function() { message.classList.add('hidden'); }, 2000);
         }
-
-        // View individual assignment
         function viewMyAssignment() {
             if (!currentDraft) return;
-
             const playerName = prompt('Enter your player name:');
             if (!playerName) return;
-
-            currentPlayerName = playerName;
-
-            // Show loading
             document.getElementById('step2').classList.add('hidden');
             document.getElementById('loading').classList.remove('hidden');
-
-            setTimeout(() => {
+            setTimeout(function() {
                 try {
                     const assignment = currentDraft.assignments[playerName];
-
-                    if (!assignment) {
-                        throw new Error('Player not found in this draft');
-                    }
-
+                    if (!assignment) throw new Error('Player not found in this draft');
                     document.getElementById('loading').classList.add('hidden');
                     document.getElementById('step3').classList.remove('hidden');
-
                     const assignmentDiv = document.getElementById('individualAssignment');
-                    assignmentDiv.innerHTML = `
+                    const revealed = assignment.revealed;
+                    const pokHtml = revealed ? assignment.pokFaction : '???';
+                    const pokClass = revealed ? '' : 'hidden-faction';
+                    let baseHtml = '';
+                    assignment.baseFactions.forEach(function(f) {
+                        const fClass = revealed ? '' : 'hidden-faction';
+                        const fValue = revealed ? f : '???';
+                        baseHtml += '<div class="faction-value ' + fClass + '">' + fValue + '</div>';
+                    });
+                    assignmentDiv.innerHTML = '
                         <div class="player-card">
-                            <h3>\${playerName}</h3>
+                            <h3>' + playerName + '</h3>
                             <div class="factions">
                                 <div class="faction-group">
                                     <div class="faction-label">PoK/Keleres Faction:</div>
-                                    <div class="faction-value \${assignment.revealed ? '' : 'hidden-faction'}">
-                                        \${assignment.revealed ? assignment.pokFaction : '???'}
-                                    </div>
+                                    <div class="faction-value ' + pokClass + '">' + pokHtml + '</div>
                                 </div>
                                 <div class="faction-group">
                                     <div class="faction-label">Base Factions (3):</div>
-                                    \${assignment.baseFactions.map(f =>
-                                        `<div class="faction-value ${assignment.revealed ? '' : 'hidden-faction'}">${f}</div>`
-                                    ).join('')}
+                                    ' + baseHtml + '
                                 </div>
                             </div>
                         </div>
-                    `;
+                    ';
                 } catch (error) {
                     alert(error.message);
                     document.getElementById('loading').classList.add('hidden');
@@ -751,55 +601,43 @@
                 }
             }, 300);
         }
-
-        // Reveal all assignments
         function revealAll() {
             if (!currentDraft) return;
-
-            if (!confirm('Are you sure you want to reveal all assignments to everyone?')) {
-                return;
-            }
-
-            // Show loading
+            if (!confirm('Are you sure you want to reveal all assignments to everyone?')) return;
             document.getElementById('step2').classList.add('hidden');
             document.getElementById('loading').classList.remove('hidden');
-
-            setTimeout(() => {
+            setTimeout(function() {
                 try {
-                    // Mark all as revealed
                     for (const player in currentDraft.assignments) {
                         currentDraft.assignments[player].revealed = true;
                     }
-
-                    // Save updated draft
-                    localStorage.setItem(`draft_${currentDraft.id}`, JSON.stringify(currentDraft));
-
+                    localStorage.setItem('draft_' + currentDraft.id, JSON.stringify(currentDraft));
                     document.getElementById('loading').classList.add('hidden');
                     document.getElementById('step4').classList.remove('hidden');
-
                     const assignmentsDiv = document.getElementById('allAssignments');
                     let html = '';
-
-                    for (const [player, assignment] of Object.entries(currentDraft.assignments)) {
-                        html += `
+                    for (const player in currentDraft.assignments) {
+                        const assignment = currentDraft.assignments[player];
+                        let baseHtml = '';
+                        assignment.baseFactions.forEach(function(f) {
+                            baseHtml += '<div class="faction-value">' + f + '</div>';
+                        });
+                        html += '
                             <div class="player-card">
-                                <h3>${player}</h3>
+                                <h3>' + player + '</h3>
                                 <div class="factions">
                                     <div class="faction-group">
                                         <div class="faction-label">PoK/Keleres Faction:</div>
-                                        <div class="faction-value">${assignment.pokFaction}</div>
+                                        <div class="faction-value">' + assignment.pokFaction + '</div>
                                     </div>
                                     <div class="faction-group">
                                         <div class="faction-label">Base Factions:</div>
-                                        \${assignment.baseFactions.map(f =>
-                                            `<div class="faction-value">${f}</div>`
-                                        ).join('')}
+                                        ' + baseHtml + '
                                     </div>
                                 </div>
                             </div>
-                        `;
+                        ';
                     }
-
                     assignmentsDiv.innerHTML = html;
                 } catch (error) {
                     alert(error.message);
@@ -808,39 +646,40 @@
                 }
             }, 300);
         }
-
-        // Back to draft
         function backToDraft() {
             document.getElementById('step3').classList.add('hidden');
             document.getElementById('step2').classList.remove('hidden');
         }
-
-        // Create new draft
         function createNewDraft() {
             window.location.href = window.location.pathname;
         }
-
-        // Reset to step 1
         function resetToStep1() {
             document.getElementById('error').classList.add('hidden');
             document.getElementById('step1').classList.remove('hidden');
         }
-
-        // Add player input field
-        function addPlayer() {
-            const container = document.getElementById('playerInputs');
-            const playerCount = container.children.length + 1;
-
-            const div = document.createElement('div');
-            div.className = 'player-input';
-            div.innerHTML = `
-                <input type="text" name="players[]" placeholder="Player \${playerCount} name" required>
-                <button type="button" onclick="removePlayer(this)" class="remove-btn">×</button>
-            `;
-            container.appendChild(div);
-        }
-
-        // Remove player input field
-        function removePlayer(button) {
-            const container = document.getElementById('playerInputs');
-            if (container.children
+        window.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const draftId = urlParams.get('draft');
+            if (draftId) {
+                const savedDraft = localStorage.getItem('draft_' + draftId);
+                if (savedDraft) {
+                    currentDraft = JSON.parse(savedDraft);
+                    document.getElementById('step1').classList.add('hidden');
+                    document.getElementById('step2').classList.remove('hidden');
+                    document.getElementById('draftIdDisplay').textContent = draftId;
+                    const shareLink = window.location.origin + window.location.pathname + '?draft=' + draftId;
+                    document.getElementById('shareLink').value = shareLink;
+                    let allRevealed = true;
+                    for (const player in currentDraft.assignments) {
+                        if (!currentDraft.assignments[player].revealed) {
+                            allRevealed = false;
+                            break;
+                        }
+                    }
+                    if (allRevealed) revealAll();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
