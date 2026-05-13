@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<!-- saved from url=(0053)file:///Users/mrobson/hobby/ti4/draft-tool/index.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TI4 PoK Faction Draft Tool</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0e23 0%, #1a1f3a 50%, #0a0e23 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+        h1 { text-align: center; color: #ff6b6b; margin-bottom: 10px; font-size: 2.2em; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+        .subtitle { text-align: center; color: #888; margin-bottom: 30px; }
+        h2 { color: #ffd166; margin: 25px 0 15px; border-bottom: 2px solid #4a4a6a; padding-bottom: 10px; }
+        .card {
+            background: rgba(20, 25, 45, 0.85);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            border: 1px solid #3a3f5a;
+        }
+        .form-group { margin-bottom: 15px; }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #a0a0c0;
+            font-weight: 600;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid #4a4f6a;
+            background: #1a1f3a;
+            color: #e0e0e0;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #ff6b6b;
+            box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.15);
+        }
+        button {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            border: none;
+            color: #fff;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+        button:active { transform: translateY(0); }
+        button:disabled {
+            background: #4a4f6a;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .player-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .player-item {
+            background: #1a1f3a;
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid #4a4f6a;
+            flex: 1;
+            min-width: 150px;
+        }
+        .player-item input {
+            width: auto;
+            flex: 1;
+            padding: 5px 10px;
+            border: none;
+            background: transparent;
+            min-width: 100px;
+        }
+        .player-item input:focus { box-shadow: none; }
+        .remove-btn {
+            background: transparent;
+            border: 1px solid #6a6a8a;
+            padding: 3px 8px;
+            border-radius: 50%;
+            cursor: pointer;
+            color: #a0a0c0;
+            width: 24px;
+            height: 24px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .remove-btn:hover {
+            background: #ff6b6b;
+            border-color: #ff6b6b;
+            color: white;
+            transform: none;
+            box-shadow: none;
+        }
+        .remove-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+        .results {
+            display: none;
+            margin-top: 30px;
+        }
+        .player-result {
+            background: rgba(30, 35, 60, 0.6);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid #ff6b6b;
+        }
+        .player-result h3 {
+            color: #ffd166;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        .faction-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+        .faction-card {
+            background: linear-gradient(135deg, #1a1f3a 0%, #252b4a 100%);
+            border: 2px solid #4a4f6a;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .faction-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff6b6b, #ffd166);
+        }
+        .faction-card .name {
+            font-weight: 700;
+            font-size: 1.1em;
+            color: #fff;
+            margin-bottom: 5px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+        .faction-card .type {
+            font-size: 0.85em;
+            color: #a0a0c0;
+            font-style: italic;
+        }
+        .type-pok { color: #ff9f43; }
+        .type-keleres { color: #c56cf0; }
+        .type-base { color: #64b5f6; }
+        .player-result { page-break-inside: avoid; }
+        
+        /* Link display for distribution */
+        .link-result {
+            background: rgba(30, 35, 60, 0.6);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid #64b5f6;
+        }
+        .link-result h3 {
+            color: #64b5f6;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        .link-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .player-link {
+            flex: 1;
+            min-width: 250px;
+        }
+        .player-link input {
+            width: 100%;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+            background: #1a1f3a;
+            border: 1px solid #4a4f6a;
+        }
+        .player-link input:focus {
+            border-color: #64b5f6;
+            box-shadow: 0 0 0 3px rgba(100, 181, 246, 0.15);
+        }
+        .copy-btn {
+            background: linear-gradient(135deg, #64b5f6 0%, #4a90e2 100%);
+            padding: 8px 15px;
+            font-size: 0.9em;
+            margin-top: 0;
+            width: auto;
+            flex: 0 0 auto;
+        }
+        .copy-btn:hover {
+            transform: translateY(0);
+            box-shadow: 0 0 10px rgba(100, 181, 246, 0.4);
+        }
+        .copied {
+            background: #4caf50 !important;
+        }
+        
+        .setup-view { display: block; }
+        .player-view { display: none; }
+        
+        .instructions {
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+        .instructions strong { color: #ffd166; }
+        .error { color: #ff6b6b; margin-top: 10px; font-weight: 600; display: none; }
+        .back-btn {
+            background: transparent;
+            border: 2px dashed #4a4f6a;
+            color: #a0a0c0;
+            margin-top: 15px;
+        }
+        .back-btn:hover {
+            border-color: #ff6b6b;
+            color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.1);
+            transform: none;
+            box-shadow: none;
+        }
+        @media print {
+            body { background: white; color: black; }
+            .card { background: white; color: black; box-shadow: none; border: 1px solid #ccc; }
+            .faction-card { background: #f5f5f5; border-color: #ddd; }
+            .faction-card .name { color: #333; }
+            .player-result { border-left-color: #333; }
+            button { display: none; }
+            .link-container { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Player View (when loaded with URL params) -->
+        <div id="playerView" class="player-view">
+            <h1>TI4 Draft</h1>
+            <p class="subtitle">Your Secret Faction Draft</p>
+            <div class="card">
+                <div id="playerFactions"></div>
+                <button onclick="window.location.href=&#39;?&#39;" class="back-btn">← Create New Draft</button>
+            </div>
+            <p style="text-align: center; color: #666; margin-top: 20px; font-size: 0.85em;">
+                This page contains your secret draft. Do not share this URL with other players.
+            </p>
+        </div>
+
+        <!-- Setup View (default) -->
+        <div id="setupView" class="setup-view">
+            <h1>TI4 Faction Draft Tool</h1>
+            <p class="subtitle">PoK + Council Keleres Secret Draft Helper</p>
+
+            <div class="instructions">
+                <strong>How it works:</strong> Enter player names below, then click "Create Secret Draft Links". 
+                Each player will receive a unique link containing only their drafted factions. 
+                Share the links privately with each player. They will only see their own factions when they open their link.
+            </div>
+
+            <div class="card">
+                <h2>Player Setup</h2>
+                <div class="form-group">
+                    <label>Number of Players (3-8)</label>
+                    <select id="playerCount" onchange="updatePlayerInputs()">
+                        <option value="3">3 Players</option>
+                        <option value="4">4 Players</option>
+                        <option value="5">5 Players</option>
+                        <option value="6">6 Players</option>
+                        <option value="7">7 Players</option>
+                        <option value="8">8 Players</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Player Names</label>
+                    <div id="playerInputs" class="player-list"><div class="player-item">
+                <input type="text" placeholder="Player 1" value="Player 1" onchange="updatePlayerName(0, this.value)">
+                <button class="remove-btn" onclick="removePlayer(0)">×</button>
+            </div><div class="player-item">
+                <input type="text" placeholder="Player 2" value="Player 2" onchange="updatePlayerName(1, this.value)">
+                <button class="remove-btn" onclick="removePlayer(1)">×</button>
+            </div><div class="player-item">
+                <input type="text" placeholder="Player 3" value="Player 3" onchange="updatePlayerName(2, this.value)">
+                <button class="remove-btn" onclick="removePlayer(2)">×</button>
+            </div><div class="player-item">
+                <input type="text" placeholder="Player 4" value="Player 4" onchange="updatePlayerName(3, this.value)">
+                <button class="remove-btn" onclick="removePlayer(3)">×</button>
+            </div><div class="player-item">
+                <input type="text" placeholder="Player 5" value="Player 5" onchange="updatePlayerName(4, this.value)">
+                <button class="remove-btn" onclick="removePlayer(4)">×</button>
+            </div><div class="player-item">
+                <input type="text" placeholder="Player 6" value="Player 6" onchange="updatePlayerName(5, this.value)">
+                <button class="remove-btn" onclick="removePlayer(5)">×</button>
+            </div></div>
+                    <div id="error" class="error" style="display: none;"></div>
+                </div>
+
+                <button onclick="createDraftLinks()">Create Secret Draft Links</button>
+            </div>
+
+            <div id="linksView" class="results" style="display: block;">
+                <h2>Secret Draft Links</h2>
+                <p style="color: #888; margin-bottom: 20px;">
+                    Copy and share each link privately with the corresponding player. 
+                    Each link will show only that player's factions.
+                </p>
+                <div id="playerLinks"><div class="link-result">
+                    <h3>Michael</h3>
+                    <div class="link-container">
+                        <div class="player-link">
+                            <input type="text" value="file:///Users/mrobson/hobby/ti4/draft-tool/index.html?p=Michael&amp;d=VGhlJTIwQXJnZW50JTIwRmxpZ2h0JTdDVGhlJTIwTDFaMVglMjBNaW5kbmV0JTdDVGhlJTIwR2hvc3RzJTIwb2YlMjBDcmV1c3MlN0NUaGUlMjBZaW4lMjBCcm90aGVyaG9vZA==" id="link-0" readonly="">
+                        </div>
+                        <button class="copy-btn" onclick="copyLink(0)">Copy Link</button>
+                    </div>
+                </div><div class="link-result">
+                    <h3>Mike</h3>
+                    <div class="link-container">
+                        <div class="player-link">
+                            <input type="text" value="file:///Users/mrobson/hobby/ti4/draft-tool/index.html?p=Mike&amp;d=VGhlJTIwRW1weXJlYW4lN0NTYXJkYWtrJTIwTidvcnIlN0NUaGUlMjBVbml2ZXJzaXRpZXMlMjBvZiUyMEpvbC1OYXIlN0NUaGUlMjBFbWlyYXRlcyUyMG9mJTIwSGFjYW4=" id="link-1" readonly="">
+                        </div>
+                        <button class="copy-btn" onclick="copyLink(1)">Copy Link</button>
+                    </div>
+                </div><div class="link-result">
+                    <h3>Eric</h3>
+                    <div class="link-container">
+                        <div class="player-link">
+                            <input type="text" value="file:///Users/mrobson/hobby/ti4/draft-tool/index.html?p=Eric&amp;d=VGhlJTIwTm9tYWQlN0NUaGUlMjBGZWRlcmF0aW9uJTIwb2YlMjBTb2wlN0NUaGUlMjBBcmJvcmVjJTdDVGhlJTIwWHhjaGElMjBLaW5nZG9t" id="link-2" readonly="">
+                        </div>
+                        <button class="copy-btn" onclick="copyLink(2)">Copy Link</button>
+                    </div>
+                </div><div class="link-result">
+                    <h3>Ronak</h3>
+                    <div class="link-container">
+                        <div class="player-link">
+                            <input type="text" value="file:///Users/mrobson/hobby/ti4/draft-tool/index.html?p=Ronak&amp;d=VGhlJTIwTWFoYWN0JTIwR2VuZS1Tb3JjZXJlcnMlN0NUaGUlMjBOYWFsdSUyMENvbGxlY3RpdmUlN0NUaGUlMjBDbGFuJTIwb2YlMjBTYWFyJTdDVGhlJTIwRW1iZXJzJTIwb2YlMjBNdWFhdA==" id="link-3" readonly="">
+                        </div>
+                        <button class="copy-btn" onclick="copyLink(3)">Copy Link</button>
+                    </div>
+                </div><div class="link-result">
+                    <h3>David</h3>
+                    <div class="link-container">
+                        <div class="player-link">
+                            <input type="text" value="file:///Users/mrobson/hobby/ti4/draft-tool/index.html?p=David&amp;d=VGhlJTIwQ291bmNpbCUyMEtlbGVyZXMlN0NUaGUlMjBOYWF6LVJva2hhJTIwQWxsaWFuY2UlN0NUaGUlMjBXaW5udSU3Q1RoZSUyMFZ1aWwnUmFpdGglMjBDYWJhbA==" id="link-4" readonly="">
+                        </div>
+                        <button class="copy-btn" onclick="copyLink(4)">Copy Link</button>
+                    </div>
+                </div><div class="link-result">
+                    <h3>Pablo</h3>
+                    <div class="link-container">
+                        <div class="player-link">
+                            <input type="text" value="file:///Users/mrobson/hobby/ti4/draft-tool/index.html?p=Pablo&amp;d=VGhlJTIwVGl0YW5zJTIwb2YlMjBVbCU3Q1RoZSUyME5la3JvJTIwVmlydXMlN0NUaGUlMjBNZW50YWslMjBDb2FsaXRpb24lN0NUaGUlMjBZc3NhcmlsJTIwVHJpYmVz" id="link-5" readonly="">
+                        </div>
+                        <button class="copy-btn" onclick="copyLink(5)">Copy Link</button>
+                    </div>
+                </div></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Faction data - Official TI4 names from wiki
+        const baseFactions = [
+            { name: 'The Arborec', type: 'base' },
+            { name: 'The Barony of Letnev', type: 'base' },
+            { name: 'The Clan of Saar', type: 'base' },
+            { name: 'The Embers of Muaat', type: 'base' },
+            { name: 'The Emirates of Hacan', type: 'base' },
+            { name: 'The Federation of Sol', type: 'base' },
+            { name: 'The Ghosts of Creuss', type: 'base' },
+            { name: 'The L1Z1X Mindnet', type: 'base' },
+            { name: 'The Mentak Coalition', type: 'base' },
+            { name: 'The Naalu Collective', type: 'base' },
+            { name: 'The Nekro Virus', type: 'base' },
+            { name: 'Sardakk N\'orr', type: 'base' },
+            { name: 'The Universities of Jol-Nar', type: 'base' },
+            { name: 'The Winnu', type: 'base' },
+            { name: 'The Xxcha Kingdom', type: 'base' },
+            { name: 'The Yin Brotherhood', type: 'base' },
+            { name: 'The Yssaril Tribes', type: 'base' }
+        ];
+
+        const pokFactions = [
+            { name: 'The Argent Flight', type: 'pok' },
+            { name: 'The Empyrean', type: 'pok' },
+            { name: 'The Mahact Gene-Sorcerers', type: 'pok' },
+            { name: 'The Naaz-Rokha Alliance', type: 'pok' },
+            { name: 'The Nomad', type: 'pok' },
+            { name: 'The Titans of Ul', type: 'pok' },
+            { name: 'The Vuil\'Raith Cabal', type: 'pok' }
+        ];
+
+        const keleresFaction = { name: 'The Council Keleres', type: 'keleres' };
+
+        // Combine PoK + Keleres
+        const pokPlusKeleres = [...pokFactions, keleresFaction];
+
+        let playerNames = [];
+
+        // Parse URL params on load
+        function parseURLParams() {
+            const params = new URLSearchParams(window.location.search);
+            const playerName = params.get('p');
+            const encodedData = params.get('d');
+            
+            if (playerName && encodedData) {
+                // Show player view
+                document.getElementById('setupView').style.display = 'none';
+                document.getElementById('playerView').style.display = 'block';
+                
+                try {
+                    const decodedString = decodeURIComponent(atob(encodedData));
+                    const factionList = decodedString.split('|');
+                    displayPlayerFactions(playerName, factionList);
+                } catch (e) {
+                    document.getElementById('playerFactions').innerHTML = '<p style="color:#ff6b6b;">Invalid draft link</p>';
+                }
+            }
+        }
+
+        function displayPlayerFactions(name, factions) {
+            const container = document.getElementById('playerFactions');
+            let html = `<h2>${decodeURIComponent(name)}</h2>`;
+            html += '<div class="faction-grid">';
+            factions.forEach(f => {
+                const faction = getFactionByName(f);
+                if (faction) {
+                    html += `<div class="faction-card">
+                        <div class="name">${faction.name}</div>
+                        <div class="type type-${faction.type}">${getTypeLabel(faction.type)}</div>
+                    </div>`;
+                }
+            });
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function getFactionByName(name) {
+            const allFactions = [...baseFactions, ...pokFactions, keleresFaction];
+            return allFactions.find(f => f.name === name);
+        }
+
+        // Initialize player inputs
+        function initPlayerInputs(count) {
+            playerNames = Array.from({ length: count }, (_, i) => `Player ${i + 1}`);
+            const container = document.getElementById('playerInputs');
+            container.innerHTML = '';
+            for (let i = 0; i < count; i++) {
+                addPlayerInput(i, playerNames[i]);
+            }
+        }
+
+        function addPlayerInput(index, name = '') {
+            const container = document.getElementById('playerInputs');
+            const div = document.createElement('div');
+            div.className = 'player-item';
+            div.innerHTML = `
+                <input type="text" placeholder="Player ${index + 1}" value="${name}" 
+                       onchange="updatePlayerName(${index}, this.value)">
+                <button class="remove-btn" onclick="removePlayer(${index})" ${playerNames.length <= 3 ? 'disabled' : ''}>×</button>
+            `;
+            container.appendChild(div);
+        }
+
+        function updatePlayerName(index, name) {
+            playerNames[index] = name.trim() || `Player ${index + 1}`;
+        }
+
+        function removePlayer(index) {
+            if (playerNames.length > 3) {
+                playerNames.splice(index, 1);
+                const select = document.getElementById('playerCount');
+                select.value = playerNames.length;
+                updatePlayerInputs();
+            }
+        }
+
+        function updatePlayerInputs() {
+            const count = parseInt(document.getElementById('playerCount').value);
+            const currentCount = playerNames.length;
+
+            if (count > currentCount) {
+                for (let i = currentCount; i < count; i++) {
+                    playerNames.push(`Player ${i + 1}`);
+                }
+                initPlayerInputs(count);
+            } else if (count < currentCount) {
+                playerNames = playerNames.slice(0, count);
+                initPlayerInputs(count);
+            }
+        }
+
+        // Fisher-Yates shuffle
+        function shuffle(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function createDraftLinks() {
+            const count = playerNames.length;
+            
+            if (count > 8) {
+                document.getElementById('error').textContent = 'Maximum 8 players (only 8 PoK+Keleres factions available)';
+                document.getElementById('error').style.display = 'block';
+                return;
+            }
+            
+            if (count < 3) {
+                document.getElementById('error').textContent = 'Minimum 3 players required';
+                document.getElementById('error').style.display = 'block';
+                return;
+            }
+            
+            document.getElementById('error').style.display = 'none';
+
+            // Create shuffled pools
+            const shuffledPok = shuffle(pokPlusKeleres);
+            const shuffledBase = shuffle(baseFactions);
+
+            // Deal 1 PoK+Keleres faction to each player
+            const pokDeals = shuffledPok.slice(0, count);
+            const remainingPok = shuffledPok.slice(count);
+
+            // Combine remaining PoK with base for the 3 random picks
+            const allRemaining = [...shuffledBase, ...remainingPok];
+            const shuffledRemaining = shuffle(allRemaining);
+            
+            // Take 3 per player from remaining
+            const baseDeals = [];
+            for (let i = 0; i < count; i++) {
+                baseDeals.push(shuffledRemaining.slice(i * 3, (i + 1) * 3));
+            }
+
+            // Create and display links
+            displayLinks(pokDeals, baseDeals);
+        }
+
+        function displayLinks(pokDeals, baseDeals) {
+            const resultsDiv = document.getElementById('playerLinks');
+            resultsDiv.innerHTML = '';
+
+            for (let i = 0; i < playerNames.length; i++) {
+                const name = playerNames[i] || `Player ${i + 1}`;
+                const pokFaction = pokDeals[i];
+                const baseFactionsForPlayer = baseDeals[i];
+                
+                // Combine all faction names
+                const allFactions = [pokFaction.name, ...baseFactionsForPlayer.map(f => f.name)];
+                const factionsString = allFactions.join('|');
+                const encodedFactions = btoa(encodeURIComponent(factionsString));
+                const encodedName = encodeURIComponent(name);
+                
+                const url = `?p=${encodedName}&d=${encodedFactions}`;
+                const fullUrl = window.location.origin + window.location.pathname + url;
+
+                const playerDiv = document.createElement('div');
+                playerDiv.className = 'link-result';
+                playerDiv.innerHTML = `
+                    <h3>${name}</h3>
+                    <div class="link-container">
+                        <div class="player-link">
+                            <input type="text" value="${fullUrl}" id="link-${i}" readonly>
+                        </div>
+                        <button class="copy-btn" onclick="copyLink(${i})">Copy Link</button>
+                    </div>
+                `;
+                resultsDiv.appendChild(playerDiv);
+            }
+
+            document.getElementById('linksView').style.display = 'block';
+            document.getElementById('linksView').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function copyLink(index) {
+            const input = document.getElementById(`link-${index}`);
+            input.select();
+            document.execCommand('copy');
+            
+            const btn = event.target;
+            btn.textContent = 'Copied!';
+            btn.classList.add('copied');
+            
+            setTimeout(() => {
+                btn.textContent = 'Copy Link';
+                btn.classList.remove('copied');
+            }, 2000);
+        }
+
+        function getTypeLabel(type) {
+            switch(type) {
+                case 'pok': return 'Prophecy of Kings';
+                case 'keleres': return 'Codex III';
+                case 'base': return 'Base Game';
+                default: return '';
+            }
+        }
+
+        // Initialize
+        window.onload = function() {
+            parseURLParams();
+            const select = document.getElementById('playerCount');
+            const defaultCount = parseInt(select.value);
+            initPlayerInputs(defaultCount);
+        };
+    </script>
+
+
+</body></html>
