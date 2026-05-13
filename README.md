@@ -11,61 +11,14 @@ These tools help groups secretly draft factions for TI4 games. Each player recei
 ```
 .
 ├── README.md                    # This file
-├── index-00.html                # Version 0: Basic draft tool (reference)
-├── index-01.html                # Version 1: Secret links with base64 encoding (reference)
-├── index-02.html                # Version 2: Seed-based reproducibility + hashes (reference)
-├── index.html                   # Latest index version (symlink/copy of index-02)
+├── index.html                   # Latest index version
 │
 ├── mistral-web/
-│   ├── standalone-01.html       # Version 0: Basic drafter (reference)
-│   ├── standalone-02.html       # Version 1: Enhanced styling (reference)
-│   ├── standalone-03.html       # Version 2: Minified code (reference)
 │   └── standalone.html          # Latest standalone version
 │
 └── perplexity-labs/
-    ├── ti4-faction-draft-01.html  # Version 0: Basic secret code system (reference)
-    ├── ti4-faction-draft-02.html  # Version 1: Added player names (reference)
-    ├── ti4-faction-draft-03-offline.html  # Version 2: Offline hash-based links (reference)
     └── ti4-faction-draft.html     # Latest perplexity-labs version
 ```
-
-## Versions
-
-### Index Series
-
-Three progressive versions of the main draft tool:
-
-| Version | File | Description |
-|---------|------|-------------|
-| 00 | `index-00.html` | Initial basic faction draft tool |
-| 01 | `index-01.html` | Added secret player links with base64-encoded faction data |
-| 02 | `index-02.html` | Added seed-based reproducibility and hash verification for player isolation |
-
-**Current:** `index.html` (based on index-02)
-
-### Standalone Series
-
-Alternative implementation with different UI approach:
-
-| Version | File | Description |
-|---------|------|-------------|
-| 01 | `standalone-01.html` | Basic faction drafter with shared results, no player isolation, basic CSS |
-| 02 | `standalone-02.html` | Enhanced UI styling with improved spacing, shadows, backdrop-filter, transitions |
-| 03 | `standalone-03.html` | Production minification - traditional syntax, string concatenation, condensed CSS |
-
-**Current:** `mistral-web/standalone.html` (based on standalone-03)
-
-### Perplexity-Labs Series
-
-Minimalist offline-capable version:
-
-| Version | File | Description |
-|---------|------|-------------|
-| 01 | `ti4-faction-draft-01.html` | Basic secret code system with player count and shared draft ID |
-| 02 | `ti4-faction-draft-02.html` | Added player names input for personalized assignments and minified CSS |
-| 03 | `ti4-faction-draft-03-offline.html` | Offline version with URL hash-based secret links for individual player views |
-
-**Current:** `perplexity-labs/ti4-faction-draft.html` (based on ti4-faction-draft-03)
 
 ## Usage
 
@@ -185,40 +138,6 @@ The draft ensures:
 - Per-player hash links for individual views
 - Works entirely client-side with no server
 
-## Development
-
-### Version History
-
-See `git log` for detailed commit history of each series.
-
-#### Index Series Commits
-```
-5fc9b5c index-00: Initial version - basic faction draft tool
-ec1606f index-01: Add secret player links with base64-encoded faction data
-88e1203 index-02: Add seed-based reproducibility and hash verification
-```
-
-#### Standalone Series Commits
-```
-b942477 standalone-01: Initial version - basic faction drafter with shared results display, no player isolation, and basic CSS styling
-bdf3f4a standalone-02: Enhanced UI styling - improved spacing, shadows, backdrop-filter blur, smoother transitions, and refined button hover effects
-56f82e0 standalone-03: Production minification - converted arrow functions to traditional syntax, replaced template literals with string concatenation, and condensed CSS for deployment
-```
-
-#### Perplexity-Labs Series Commits
-```
-0ba65e6 ti4-faction-draft-01: Initial version - basic secret code system with player count and shared draft ID
-b1a7d69 ti4-faction-draft-02: Added player names input for personalized faction assignments and minified CSS
-3a4d176 ti4-faction-draft-03: Offline version with URL hash-based secret links for individual player views
-```
-
-## Getting Started
-
-Simply open any of the `.html` files in a web browser. No server required.
-
-For the best experience with the most features, use:
-- `index.html` - Full-featured with seed reproducibility and hash verification
-
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
@@ -231,4 +150,3 @@ This project is open source and available under the [BSD 2-Clause License](LICEN
 
 - Twilight Imperium Fourth Edition by Fantasy Flight Games
 - Faction data sourced from the [TI4 Wiki](https://twilight-imperium.fandom.com/wiki/Factions)
-- Inspired by the need for fair and secret faction drafting in remote gaming sessions
