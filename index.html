@@ -487,8 +487,8 @@
         }
 
         function displayPlayerFactionsFromSeed(seed, playerIndex, playerCount, playerName) {
-            const shuffledPok = seededShuffle(pokPlusKeleres, seed + '-pok');
-            const shuffledBase = seededShuffle(baseFactions, seed + '-base');
+            const shuffledPok = seededShuffle(pokPlusKeleres, simpleHash('pok', seed));
+            const shuffledBase = seededShuffle(baseFactions, simpleHash('base', seed));
 
             // Deal 1 PoK+Keleres faction to each player
             const pokDeals = shuffledPok.slice(0, playerCount);
@@ -496,7 +496,7 @@
 
             // Combine remaining PoK with base for the 3 random picks
             const allRemaining = [...shuffledBase, ...remainingPok];
-            const shuffledRemaining = seededShuffle(allRemaining, seed + '-remaining');
+            const shuffledRemaining = seededShuffle(allRemaining, simpleHash('remaining', seed));
             
             // Take 3 per player from remaining
             const baseDeals = [];
