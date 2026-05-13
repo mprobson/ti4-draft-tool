@@ -455,10 +455,11 @@
             const params = new URLSearchParams(window.location.search);
             const seed = params.get('s');
             const playerCount = params.get('c');
+            const playerIndex = params.get('i');
             const playerName = params.get('p');
             const hash = params.get('h');
             
-            if (seed && playerCount !== null && playerName && hash !== null) {
+            if (seed && playerCount !== null && playerName) {
                 // Show player view
                 document.getElementById('setupView').style.display = 'none';
                 document.getElementById('playerView').style.display = 'block';
@@ -466,22 +467,31 @@
                 currentSeed = seed;
                 const count = parseInt(playerCount);
                 const name = decodeURIComponent(playerName);
-                const receivedHash = parseInt(hash);
                 
-                // Verify the hash matches a player in the draft
-                // We need to check all possible player indices
-                let found = false;
-                for (let i = 0; i < count; i++) {
-                    const expectedHash = simpleHash(name + i, seed);
-                    if (expectedHash === receivedHash) {
-                        displayPlayerFactionsFromSeed(seed, i, count, name);
-                        found = true;
-                        break;
+                // If player index is provided, use it directly
+                if (playerIndex !== null) {
+                    const index = parseInt(playerIndex);
+                    if (!isNaN(index) && index >= 0 && index < count) {
+                        displayPlayerFactionsFromSeed(seed, index, count, name);
+                        return;
                     }
                 }
                 
-                if (!found) {
-                    document.getElementById('playerFactions').innerHTML = '<p style="color:#ff6b6b;">Invalid draft link or player name</p>';
+                // Fallback: try to find matching hash (for backwards compatibility with old links)
+                if (hash !== null) {
+                    const receivedHash = parseInt(hash);
+                    let found = false;
+                    for (let i = 0; i < count; i++) {
+                        const expectedHash = simpleHash(name + i, seed);
+                        if (expectedHash === receivedHash) {
+                            displayPlayerFactionsFromSeed(seed, i, count, name);
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        document.getElementById('playerFactions').innerHTML = '<p style="color:#ff6b6b;">Invalid draft link or player name</p>';
+                    }
                 }
             }
         }
@@ -636,7 +646,8 @@
                 const encodedName = encodeURIComponent(name);
                 const hash = simpleHash(name + i, seed);
                 
-                const url = `?s=${seed}&c=${count}&p=${encodedName}&h=${hash}`;
+                // Include player index for direct access, keep hash for backwards compatibility
+                const url = `?s=${seed}&c=${count}&i=${i}&p=${encodedName}&h=${hash}`;
                 const fullUrl = window.location.origin + window.location.pathname + url;
 
                 const playerDiv = document.createElement('div');
