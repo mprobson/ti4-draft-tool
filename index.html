@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<!-- saved from url=(0053)file:///Users/mrobson/hobby/ti4/draft-tool/index.html -->
-<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TI4 PoK Faction Draft Tool</title>
     <style>
@@ -250,6 +250,34 @@
             transform: none;
             box-shadow: none;
         }
+        .seed-display {
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            font-size: 0.9em;
+            word-break: break-all;
+        }
+        .seed-display code {
+            background: #1a1f3a;
+            padding: 5px 10px;
+            border-radius: 4px;
+            display: inline-block;
+            margin: 0 5px;
+        }
+        .seed-input {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .seed-input input {
+            flex: 1;
+        }
+        .seed-input button {
+            width: auto;
+            flex: 0 0 auto;
+            margin-top: 0;
+        }
         @media print {
             body { background: white; color: black; }
             .card { background: white; color: black; box-shadow: none; border: 1px solid #ccc; }
@@ -269,7 +297,8 @@
             <p class="subtitle">Your Secret Faction Draft</p>
             <div class="card">
                 <div id="playerFactions"></div>
-                <button onclick="window.location.href=&#39;?&#39;" class="back-btn">← Create New Draft</button>
+                <div id="playerSeedDisplay" class="seed-display" style="display:none;"></div>
+                <button onclick="window.location.href='?'" class="back-btn">← Create New Draft</button>
             </div>
             <p style="text-align: center; color: #666; margin-top: 20px; font-size: 0.85em;">
                 This page contains your secret draft. Do not share this URL with other players.
@@ -282,9 +311,9 @@
             <p class="subtitle">PoK + Council Keleres Secret Draft Helper</p>
 
             <div class="instructions">
-                <strong>How it works:</strong> Enter player names below, then click "Create Secret Draft Links". 
-                Each player will receive a unique link containing only their drafted factions. 
-                Share the links privately with each player. They will only see their own factions when they open their link.
+                <strong>How it works:</strong> Enter player names below, optionally provide a seed for reproducible drafts, 
+                then click "Create Secret Draft Links". Each player will receive a unique link containing their name and the seed. 
+                Save the seed to recreate the same draft later. Each link only works for the specific player name it was created for.
             </div>
 
             <div class="card">
@@ -302,87 +331,31 @@
                 </div>
 
                 <div class="form-group">
+                    <label>Seed (optional - for reproducible drafts)</label>
+                    <div class="seed-input">
+                        <input type="text" id="seedInput" placeholder="Leave blank for random, or enter a seed">
+                        <button onclick="generateRandomSeed()">Random</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
                     <label>Player Names</label>
-                    <div id="playerInputs" class="player-list"><div class="player-item">
-                <input type="text" placeholder="Player 1" value="Player 1" onchange="updatePlayerName(0, this.value)">
-                <button class="remove-btn" onclick="removePlayer(0)">×</button>
-            </div><div class="player-item">
-                <input type="text" placeholder="Player 2" value="Player 2" onchange="updatePlayerName(1, this.value)">
-                <button class="remove-btn" onclick="removePlayer(1)">×</button>
-            </div><div class="player-item">
-                <input type="text" placeholder="Player 3" value="Player 3" onchange="updatePlayerName(2, this.value)">
-                <button class="remove-btn" onclick="removePlayer(2)">×</button>
-            </div><div class="player-item">
-                <input type="text" placeholder="Player 4" value="Player 4" onchange="updatePlayerName(3, this.value)">
-                <button class="remove-btn" onclick="removePlayer(3)">×</button>
-            </div><div class="player-item">
-                <input type="text" placeholder="Player 5" value="Player 5" onchange="updatePlayerName(4, this.value)">
-                <button class="remove-btn" onclick="removePlayer(4)">×</button>
-            </div><div class="player-item">
-                <input type="text" placeholder="Player 6" value="Player 6" onchange="updatePlayerName(5, this.value)">
-                <button class="remove-btn" onclick="removePlayer(5)">×</button>
-            </div></div>
-                    <div id="error" class="error" style="display: none;"></div>
+                    <div id="playerInputs" class="player-list"></div>
+                    <div id="error" class="error"></div>
                 </div>
 
                 <button onclick="createDraftLinks()">Create Secret Draft Links</button>
+                <div id="seedDisplay" class="seed-display" style="display:none;"></div>
             </div>
 
-            <div id="linksView" class="results" style="display: block;">
+            <div id="linksView" class="results">
                 <h2>Secret Draft Links</h2>
                 <p style="color: #888; margin-bottom: 20px;">
                     Copy and share each link privately with the corresponding player. 
-                    Each link will show only that player's factions.
+                    Each link will show only that player's factions. The link contains the player's name and seed - 
+                    changing the name in the URL will not show other players' factions.
                 </p>
-                <div id="playerLinks"><div class="link-result">
-                    <h3>Michael</h3>
-                    <div class="link-container">
-                        <div class="player-link">
-                            <input type="text" value="file:///Users/mrobson/hobby/ti4/draft-tool/index.html?p=Michael&amp;d=VGhlJTIwQXJnZW50JTIwRmxpZ2h0JTdDVGhlJTIwTDFaMVglMjBNaW5kbmV0JTdDVGhlJTIwR2hvc3RzJTIwb2YlMjBDcmV1c3MlN0NUaGUlMjBZaW4lMjBCcm90aGVyaG9vZA==" id="link-0" readonly="">
-                        </div>
-                        <button class="copy-btn" onclick="copyLink(0)">Copy Link</button>
-                    </div>
-                </div><div class="link-result">
-                    <h3>Mike</h3>
-                    <div class="link-container">
-                        <div class="player-link">
-                            <input type="text" value="file:///Users/mrobson/hobby/ti4/draft-tool/index.html?p=Mike&amp;d=VGhlJTIwRW1weXJlYW4lN0NTYXJkYWtrJTIwTidvcnIlN0NUaGUlMjBVbml2ZXJzaXRpZXMlMjBvZiUyMEpvbC1OYXIlN0NUaGUlMjBFbWlyYXRlcyUyMG9mJTIwSGFjYW4=" id="link-1" readonly="">
-                        </div>
-                        <button class="copy-btn" onclick="copyLink(1)">Copy Link</button>
-                    </div>
-                </div><div class="link-result">
-                    <h3>Eric</h3>
-                    <div class="link-container">
-                        <div class="player-link">
-                            <input type="text" value="file:///Users/mrobson/hobby/ti4/draft-tool/index.html?p=Eric&amp;d=VGhlJTIwTm9tYWQlN0NUaGUlMjBGZWRlcmF0aW9uJTIwb2YlMjBTb2wlN0NUaGUlMjBBcmJvcmVjJTdDVGhlJTIwWHhjaGElMjBLaW5nZG9t" id="link-2" readonly="">
-                        </div>
-                        <button class="copy-btn" onclick="copyLink(2)">Copy Link</button>
-                    </div>
-                </div><div class="link-result">
-                    <h3>Ronak</h3>
-                    <div class="link-container">
-                        <div class="player-link">
-                            <input type="text" value="file:///Users/mrobson/hobby/ti4/draft-tool/index.html?p=Ronak&amp;d=VGhlJTIwTWFoYWN0JTIwR2VuZS1Tb3JjZXJlcnMlN0NUaGUlMjBOYWFsdSUyMENvbGxlY3RpdmUlN0NUaGUlMjBDbGFuJTIwb2YlMjBTYWFyJTdDVGhlJTIwRW1iZXJzJTIwb2YlMjBNdWFhdA==" id="link-3" readonly="">
-                        </div>
-                        <button class="copy-btn" onclick="copyLink(3)">Copy Link</button>
-                    </div>
-                </div><div class="link-result">
-                    <h3>David</h3>
-                    <div class="link-container">
-                        <div class="player-link">
-                            <input type="text" value="file:///Users/mrobson/hobby/ti4/draft-tool/index.html?p=David&amp;d=VGhlJTIwQ291bmNpbCUyMEtlbGVyZXMlN0NUaGUlMjBOYWF6LVJva2hhJTIwQWxsaWFuY2UlN0NUaGUlMjBXaW5udSU3Q1RoZSUyMFZ1aWwnUmFpdGglMjBDYWJhbA==" id="link-4" readonly="">
-                        </div>
-                        <button class="copy-btn" onclick="copyLink(4)">Copy Link</button>
-                    </div>
-                </div><div class="link-result">
-                    <h3>Pablo</h3>
-                    <div class="link-container">
-                        <div class="player-link">
-                            <input type="text" value="file:///Users/mrobson/hobby/ti4/draft-tool/index.html?p=Pablo&amp;d=VGhlJTIwVGl0YW5zJTIwb2YlMjBVbCU3Q1RoZSUyME5la3JvJTIwVmlydXMlN0NUaGUlMjBNZW50YWslMjBDb2FsaXRpb24lN0NUaGUlMjBZc3NhcmlsJTIwVHJpYmVz" id="link-5" readonly="">
-                        </div>
-                        <button class="copy-btn" onclick="copyLink(5)">Copy Link</button>
-                    </div>
-                </div></div>
+                <div id="playerLinks"></div>
             </div>
         </div>
     </div>
@@ -425,31 +398,119 @@
         const pokPlusKeleres = [...pokFactions, keleresFaction];
 
         let playerNames = [];
+        let currentSeed = '';
+
+        // Simple seeded random number generator
+        class SeededRandom {
+            constructor(seed) {
+                this.seed = seed;
+            }
+            next() {
+                this.seed = (this.seed * 9301 + 49297) % 233280;
+                return this.seed / 233280;
+            }
+            nextInt(max) {
+                return Math.floor(this.next() * max);
+            }
+        }
+
+        function seededShuffle(array, seed) {
+            const arr = [...array];
+            const random = new SeededRandom(seed);
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = random.nextInt(i + 1);
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function generateRandomSeed() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let seed = '';
+            for (let i = 0; i < 16; i++) {
+                seed += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            document.getElementById('seedInput').value = seed;
+        }
+
+        // Simple hash function for obfuscating player index
+        function simpleHash(str, seed) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                const char = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash; // Convert to 32bit integer
+            }
+            // Mix with seed
+            for (let i = 0; i < seed.length; i++) {
+                hash = ((hash << 5) - hash) + seed.charCodeAt(i);
+                hash = hash & hash;
+            }
+            // Return as positive integer
+            return Math.abs(hash);
+        }
 
         // Parse URL params on load
         function parseURLParams() {
             const params = new URLSearchParams(window.location.search);
+            const seed = params.get('s');
+            const playerCount = params.get('c');
             const playerName = params.get('p');
-            const encodedData = params.get('d');
+            const hash = params.get('h');
             
-            if (playerName && encodedData) {
+            if (seed && playerCount !== null && playerName && hash !== null) {
                 // Show player view
                 document.getElementById('setupView').style.display = 'none';
                 document.getElementById('playerView').style.display = 'block';
                 
-                try {
-                    const decodedString = decodeURIComponent(atob(encodedData));
-                    const factionList = decodedString.split('|');
-                    displayPlayerFactions(playerName, factionList);
-                } catch (e) {
-                    document.getElementById('playerFactions').innerHTML = '<p style="color:#ff6b6b;">Invalid draft link</p>';
+                currentSeed = seed;
+                const count = parseInt(playerCount);
+                const name = decodeURIComponent(playerName);
+                const receivedHash = parseInt(hash);
+                
+                // Verify the hash matches a player in the draft
+                // We need to check all possible player indices
+                let found = false;
+                for (let i = 0; i < count; i++) {
+                    const expectedHash = simpleHash(name + i, seed);
+                    if (expectedHash === receivedHash) {
+                        displayPlayerFactionsFromSeed(seed, i, count, name);
+                        found = true;
+                        break;
+                    }
+                }
+                
+                if (!found) {
+                    document.getElementById('playerFactions').innerHTML = '<p style="color:#ff6b6b;">Invalid draft link or player name</p>';
                 }
             }
         }
 
-        function displayPlayerFactions(name, factions) {
+        function displayPlayerFactionsFromSeed(seed, playerIndex, playerCount, playerName) {
+            const shuffledPok = seededShuffle(pokPlusKeleres, seed + '-pok');
+            const shuffledBase = seededShuffle(baseFactions, seed + '-base');
+
+            // Deal 1 PoK+Keleres faction to each player
+            const pokDeals = shuffledPok.slice(0, playerCount);
+            const remainingPok = shuffledPok.slice(playerCount);
+
+            // Combine remaining PoK with base for the 3 random picks
+            const allRemaining = [...shuffledBase, ...remainingPok];
+            const shuffledRemaining = seededShuffle(allRemaining, seed + '-remaining');
+            
+            // Take 3 per player from remaining
+            const baseDeals = [];
+            for (let i = 0; i < playerCount; i++) {
+                baseDeals.push(shuffledRemaining.slice(i * 3, (i + 1) * 3));
+            }
+
+            const factions = [
+                pokDeals[playerIndex].name,
+                ...baseDeals[playerIndex].map(f => f.name)
+            ];
+
             const container = document.getElementById('playerFactions');
-            let html = `<h2>${decodeURIComponent(name)}</h2>`;
+            let html = `<h2>${playerName}</h2>`;
             html += '<div class="faction-grid">';
             factions.forEach(f => {
                 const faction = getFactionByName(f);
@@ -462,6 +523,11 @@
             });
             html += '</div>';
             container.innerHTML = html;
+
+            // Display seed info
+            const seedDisplay = document.getElementById('playerSeedDisplay');
+            seedDisplay.style.display = 'block';
+            seedDisplay.innerHTML = `<strong>Draft Seed:</strong> <code>${seed}</code> - Save this to recreate the same draft later.`;
         }
 
         function getFactionByName(name) {
@@ -519,18 +585,9 @@
             }
         }
 
-        // Fisher-Yates shuffle
-        function shuffle(array) {
-            const arr = [...array];
-            for (let i = arr.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [arr[i], arr[j]] = [arr[j], arr[i]];
-            }
-            return arr;
-        }
-
         function createDraftLinks() {
             const count = playerNames.length;
+            const seedInput = document.getElementById('seedInput').value.trim();
             
             if (count > 8) {
                 document.getElementById('error').textContent = 'Maximum 8 players (only 8 PoK+Keleres factions available)';
@@ -546,44 +603,40 @@
             
             document.getElementById('error').style.display = 'none';
 
-            // Create shuffled pools
-            const shuffledPok = shuffle(pokPlusKeleres);
-            const shuffledBase = shuffle(baseFactions);
-
-            // Deal 1 PoK+Keleres faction to each player
-            const pokDeals = shuffledPok.slice(0, count);
-            const remainingPok = shuffledPok.slice(count);
-
-            // Combine remaining PoK with base for the 3 random picks
-            const allRemaining = [...shuffledBase, ...remainingPok];
-            const shuffledRemaining = shuffle(allRemaining);
-            
-            // Take 3 per player from remaining
-            const baseDeals = [];
-            for (let i = 0; i < count; i++) {
-                baseDeals.push(shuffledRemaining.slice(i * 3, (i + 1) * 3));
+            // Use seed or generate one
+            currentSeed = seedInput || generateRandomSeedValue();
+            if (!seedInput) {
+                document.getElementById('seedInput').value = currentSeed;
             }
 
+            // Display seed
+            const seedDisplay = document.getElementById('seedDisplay');
+            seedDisplay.style.display = 'block';
+            seedDisplay.innerHTML = `<strong>Draft Seed:</strong> <code>${currentSeed}</code> - Save this to recreate the same draft later.`;
+
             // Create and display links
-            displayLinks(pokDeals, baseDeals);
+            displayLinks(currentSeed, count);
         }
 
-        function displayLinks(pokDeals, baseDeals) {
+        function generateRandomSeedValue() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let seed = '';
+            for (let i = 0; i < 16; i++) {
+                seed += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return seed;
+        }
+
+        function displayLinks(seed, count) {
             const resultsDiv = document.getElementById('playerLinks');
             resultsDiv.innerHTML = '';
 
             for (let i = 0; i < playerNames.length; i++) {
                 const name = playerNames[i] || `Player ${i + 1}`;
-                const pokFaction = pokDeals[i];
-                const baseFactionsForPlayer = baseDeals[i];
-                
-                // Combine all faction names
-                const allFactions = [pokFaction.name, ...baseFactionsForPlayer.map(f => f.name)];
-                const factionsString = allFactions.join('|');
-                const encodedFactions = btoa(encodeURIComponent(factionsString));
                 const encodedName = encodeURIComponent(name);
+                const hash = simpleHash(name + i, seed);
                 
-                const url = `?p=${encodedName}&d=${encodedFactions}`;
+                const url = `?s=${seed}&c=${count}&p=${encodedName}&h=${hash}`;
                 const fullUrl = window.location.origin + window.location.pathname + url;
 
                 const playerDiv = document.createElement('div');
@@ -636,6 +689,5 @@
             initPlayerInputs(defaultCount);
         };
     </script>
-
-
-</body></html>
+</body>
+</html>
