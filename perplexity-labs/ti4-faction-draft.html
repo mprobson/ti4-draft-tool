@@ -1,0 +1,206 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TI4 Faction Draft Helper</title>
+  <style>
+    :root { color-scheme: dark; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: #0f1220;
+      color: #e8eaf6;
+    }
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 24px; }
+    h1 { margin: 0 0 8px; font-size: 28px; }
+    p { line-height: 1.5; color: #c9cde5; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .card {
+      background: #171a2b;
+      border: 1px solid #2a2f4a;
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.25);
+    }
+    label { display:block; font-weight: 600; margin: 10px 0 6px; }
+    input, textarea, select, button {
+      width: 100%;
+      box-sizing: border-box;
+      border-radius: 10px;
+      border: 1px solid #3a4064;
+      background: #0f1220;
+      color: #e8eaf6;
+      padding: 10px 12px;
+      font: inherit;
+    }
+    textarea { min-height: 220px; resize: vertical; }
+    button { cursor: pointer; font-weight: 700; background: #5b6cff; border-color: #5b6cff; }
+    button.secondary { background: #22263b; border-color: #3a4064; }
+    button:disabled { opacity: .5; cursor: not-allowed; }
+    .row { display:flex; gap:10px; }
+    .row > * { flex:1; }
+    .small { font-size: 13px; color: #aeb4d6; }
+    .muted { color: #8f95b8; }
+    .list { display: grid; gap: 8px; max-height: 520px; overflow: auto; }
+    .faction {
+      display:flex; align-items:center; justify-content:space-between; gap: 12px;
+      padding: 10px 12px; border: 1px solid #2a2f4a; border-radius: 10px;
+      background: #111528;
+    }
+    .pill { padding: 3px 8px; border-radius: 999px; background: #22263b; font-size: 12px; color: #c9cde5; }
+    .hidden { display:none !important; }
+    .secret { filter: blur(9px); user-select:none; }
+    .results { display:grid; gap: 16px; }
+    .player { border:1px solid #2a2f4a; border-radius: 12px; padding: 14px; background:#111528; }
+    .player h3 { margin: 0 0 8px; }
+    .pick { margin: 6px 0; padding: 8px 10px; border-radius: 10px; background: #171a2b; border: 1px solid #2a2f4a; }
+    .controls { display:flex; gap:10px; flex-wrap:wrap; }
+    .controls button { width:auto; }
+    .notice { background:#22263b; border:1px solid #3a4064; padding: 10px 12px; border-radius: 10px; }
+    @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>TI4 Faction Draft Helper</h1>
+    <p>Secretly deal each player 1 random faction from PoK + Keleres, then 3 more random factions from the remaining pool. The hidden draft is kept on each player’s device with a local secret code.</p>
+
+    <div class="grid">
+      <div class="card">
+        <h2>Setup</h2>
+        <label>Players</label>
+        <input id="players" type="number" min="2" value="6" />
+        <label>Secret code</label>
+        <input id="code" type="password" placeholder="Shared group code" />
+        <div class="small">Everyone entering the same code will reproduce the same randomized draft. Use a fresh code each session.</div>
+        <label>Faction list</label>
+        <textarea id="factions"></textarea>
+        <div class="controls" style="margin-top:12px;">
+          <button id="generate">Generate draft</button>
+          <button id="showhide" class="secondary" type="button">Reveal / hide</button>
+          <button id="copy" class="secondary" type="button">Copy player view</button>
+        </div>
+        <div id="msg" class="notice hidden" style="margin-top:12px;"></div>
+      </div>
+
+      <div class="card">
+        <h2>Draft pool</h2>
+        <div id="pool" class="list"></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px;">
+      <h2>Player views</h2>
+      <div class="small">Open this page on each player’s device. Enter the same secret code, then reveal only your own assigned view.</div>
+      <div id="results" class="results" style="margin-top:12px;"></div>
+    </div>
+  </div>
+
+  <script>
+    const defaultFactions = [
+      'The Arborec','The Barony of Letnev','The Clan of Saar','The Embers of Muaat','The Emirates of Hacan',
+      'The Federation of Sol','The Ghosts of Creuss','The L1Z1X Mindnet','The Mentak Coalition','The Naaz-Rokha Alliance',
+      'The Nekro Virus','The Sardakk N'orr','The Universities of Jol-Nar','The Winnu','The Yssaril Tribes',
+      'The Argent Flight','The Empyrean','The Mahact Gene-Sorcerers','The Naalu Collective','The Nomad',
+      'The Titans of Ul','The Vuil'raith Cabal','The Council Keleres'
+    ];
+
+    const el = (id) => document.getElementById(id);
+    el('factions').value = defaultFactions.join('
+');
+
+    function hashCode(str) {
+      let h = 2166136261;
+      for (let i = 0; i < str.length; i++) {
+        h ^= str.charCodeAt(i);
+        h = Math.imul(h, 16777619);
+      }
+      return h >>> 0;
+    }
+
+    function mulberry32(a) {
+      return function() {
+        let t = a += 0x6D2B79F5;
+        t = Math.imul(t ^ t >>> 15, t | 1);
+        t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+        return ((t ^ t >>> 14) >>> 0) / 4294967296;
+      }
+    }
+
+    function shuffle(arr, rnd) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(rnd() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function parseFactions() {
+      return el('factions').value.split('
+').map(s => s.trim()).filter(Boolean);
+    }
+
+    function renderPool(items) {
+      el('pool').innerHTML = items.map(x => `<div class="faction"><span>${x}</span><span class="pill">available</span></div>`).join('');
+    }
+
+    function generate() {
+      const players = Math.max(1, parseInt(el('players').value || '0', 10));
+      const code = el('code').value.trim();
+      const factions = parseFactions();
+      if (!code) return showMsg('Enter a secret code first.');
+      if (factions.length < players * 4) return showMsg('Need at least 4 factions per player.');
+      const rnd = mulberry32(hashCode(code));
+      const shuffled = shuffle(factions, rnd);
+      const primary = shuffled.slice(0, players);
+      const rest = shuffled.slice(players);
+      const secondary = shuffle(rest, rnd);
+      const picks = Array.from({length: players}, (_, i) => ({
+        primary: primary[i],
+        choices: secondary.slice(i * 3, i * 3 + 3)
+      }));
+      renderResults(picks);
+      renderPool(shuffled);
+      showMsg(`Generated ${players} hidden hands from ${factions.length} factions.`);
+    }
+
+    function renderResults(picks) {
+      el('results').innerHTML = picks.map((p, idx) => `
+        <div class="player" data-player="${idx+1}">
+          <h3>Player ${idx+1}</h3>
+          <div class="pick secret primary">Primary: ${p.primary}</div>
+          ${p.choices.map((c, i) => `<div class="pick secret">Option ${i+1}: ${c}</div>`).join('')}
+        </div>
+      `).join('');
+    }
+
+    function toggleReveal() {
+      document.querySelectorAll('.secret').forEach(n => n.classList.toggle('secret'));
+      document.querySelectorAll('.primary').forEach(n => n.classList.toggle('secret'));
+    }
+
+    async function copyView() {
+      const txt = [...document.querySelectorAll('.player')].map(p => p.innerText).join('
+
+');
+      await navigator.clipboard.writeText(txt);
+      showMsg('Copied visible player views.');
+    }
+
+    function showMsg(msg) {
+      const m = el('msg');
+      m.textContent = msg;
+      m.classList.remove('hidden');
+    }
+
+    el('generate').addEventListener('click', generate);
+    el('showhide').addEventListener('click', toggleReveal);
+    el('copy').addEventListener('click', copyView);
+    renderPool(defaultFactions);
+    generate();
+  </script>
+</body>
+</html>
