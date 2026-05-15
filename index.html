@@ -17,6 +17,7 @@
         h1 { text-align: center; color: #ff6b6b; margin-bottom: 10px; font-size: 2.2em; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
         .subtitle { text-align: center; color: #888; margin-bottom: 30px; }
         h2 { color: #ffd166; margin: 25px 0 15px; border-bottom: 2px solid #4a4a6a; padding-bottom: 10px; }
+        a { color: #e0e0e0; }
         .card {
             background: rgba(20, 25, 45, 0.85);
             border-radius: 12px;
@@ -54,7 +55,6 @@
             font-size: 1.1em;
             font-weight: 700;
             cursor: pointer;
-            margin-top: 10px;
             transition: transform 0.2s, box-shadow 0.2s;
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -515,8 +515,9 @@
             factions.forEach(f => {
                 const faction = getFactionByName(f);
                 if (faction) {
+                    let escapedname = faction.name.split(' ').join('_');
                     html += `<div class="faction-card">
-                        <div class="name">${faction.name}</div>
+                        <div class="name"><a href=https://twilight-imperium.fandom.com/wiki/${escapedname}>${faction.name}</a></div>
                         <div class="type type-${faction.type}">${getTypeLabel(faction.type)}</div>
                     </div>`;
                 }
@@ -637,7 +638,7 @@
                 const hash = simpleHash(name + i, seed);
                 
                 const url = `?s=${seed}&c=${count}&p=${encodedName}&h=${hash}`;
-                const fullUrl = window.location.origin + window.location.pathname + url;
+                const fullUrl = window.location.protocol + '//' + window.location.host + '/' + window.location.pathname + url;
 
                 const playerDiv = document.createElement('div');
                 playerDiv.className = 'link-result';
