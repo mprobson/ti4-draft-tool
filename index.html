@@ -638,7 +638,7 @@
                 const hash = simpleHash(name + i, seed);
                 
                 const url = `?s=${seed}&c=${count}&p=${encodedName}&h=${hash}`;
-                const fullUrl = window.location.origin + window.location.pathname + url;
+                const fullUrl = window.location.protocol + '//' + window.location.host + '/' + window.location.pathname + url;
 
                 const playerDiv = document.createElement('div');
                 playerDiv.className = 'link-result';
