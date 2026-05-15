@@ -17,6 +17,7 @@
         h1 { text-align: center; color: #ff6b6b; margin-bottom: 10px; font-size: 2.2em; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
         .subtitle { text-align: center; color: #888; margin-bottom: 30px; }
         h2 { color: #ffd166; margin: 25px 0 15px; border-bottom: 2px solid #4a4a6a; padding-bottom: 10px; }
+        a { color: #e0e0e0; }
         .card {
             background: rgba(20, 25, 45, 0.85);
             border-radius: 12px;
@@ -515,8 +516,9 @@
             factions.forEach(f => {
                 const faction = getFactionByName(f);
                 if (faction) {
+                    let escapedname = faction.name.split(' ').join('_');
                     html += `<div class="faction-card">
-                        <div class="name">${faction.name}</div>
+                        <div class="name"><a href=https://twilight-imperium.fandom.com/wiki/${escapedname}>${faction.name}</a></div>
                         <div class="type type-${faction.type}">${getTypeLabel(faction.type)}</div>
                     </div>`;
                 }
